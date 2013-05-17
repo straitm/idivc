@@ -134,13 +134,15 @@ static idivc_output_event doit(const idivc_input_event & ev,
       }
     } 
     else{
-      printf("IV!\n");
       if(time < out.timeiv){
         out.timeiv = time;
         out.firstivpmt = ev.pmt[i];
       }
     }
   }    
+
+  if(out.timeiv > 999) out.timeiv = -1;
+  if(out.timeid > 999) out.timeid = -1;
 
   return out;
 }
