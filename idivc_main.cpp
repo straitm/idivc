@@ -13,6 +13,8 @@ using namespace std;
 #include "TFile.h"
 #include "TGraphErrors.h"
 
+static const int NPMT = 468;
+
 
 static void printhelp()
 {
@@ -405,8 +407,6 @@ static int ch2pmt(const int ch)
     case 291: return 187;
     case 292: return 205;
     case 293: return 195;
-    case 294: return 65535;
-    case 295: return 65535;
     case 296: return 196;
     case 297: return 214;
     case 298: return 212;
@@ -518,7 +518,6 @@ static int ch2pmt(const int ch)
     case 1012: return 439;
     case 1013: return 441;
     case 1014: return 443;
-    case 1015: return 65535;
     case 1016: return 399;
     case 1017: return 423;
     case 1018: return 424;
@@ -594,22 +593,27 @@ static idivc_output_event doit(const idivc_input_event & ev,
   memset(&out, 0, sizeof(out));
 
   out.timeid = out.timeiv = 9999;
+  out.firstidpmt = out.firstivpmt = -1;
 
-  for(int ch = 0; ch < 520; ch++){
-    const int pmt = ch2pmt(ch);
-    if(pmt < 0) continue;
+  for(int i = 0; i < 520; i++){
+    if(ev.pmt[i] < 0 || ev.pmt[i] >= NPMT) continue;
 
-    const double time = ev.tstart[ch] + fido_consts[pmt];
+    const double time = ev.tstart[i] + fido_consts[ev.pmt[i]];
+   
+    if(ev.tstart[i] <= 0) continue;
 
-    if(pmt < 390){
+    if(ev.pmt[i] < 390){
       if(time < out.timeid){
         out.timeid = time; 
-        out.firstidpmt = pmt;
+        out.firstidpmt = ev.pmt[i];
       }
     } 
-    else if(time < out.timeiv){
-      out.timeiv = time;
-      out.firstivpmt = pmt;
+    else{
+      printf("IV!\n");
+      if(time < out.timeiv){
+        out.timeiv = time;
+        out.firstivpmt = ev.pmt[i];
+      }
     }
   }    
 
@@ -646,8 +650,6 @@ static double * getfidoconsts(const char * const timingfilename)
     printf("Couldn't get finalt0table_caliter01 from timing file\n");
     exit(1);
   }
-
-  const int NPMT = 468;
 
   double * const consts = (double*)malloc(NPMT*sizeof(double));
   memset(consts, 0, NPMT*sizeof(double));

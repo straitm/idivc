@@ -35,7 +35,7 @@ static void get_hits(const uint64_t current_event)
   // Go through some contortions for speed. Favor TBranch::GetEntry over
   // TTree::GetEntry, which loops through unused branches on every call.
   // Avoid using TChain to find the TTrees' branches on every call.
-  static TBranch * tbranch = 0;
+  static TBranch * tbranch = 0, * pbranch = 0;
 
   static uint64_t offset = 0, nextbreak = 0;
 
@@ -56,14 +56,17 @@ static void get_hits(const uint64_t current_event)
 
     curtree->SetMakeClass(1);
     tbranch   = curtree->GetBranch("PulseSlideWinInfoBranch.fTstart_raw");
+    pbranch   = curtree->GetBranch("PulseSlideWinInfoBranch.fPMTNum");
     int dummy;
     curtree->SetBranchAddress("PulseSlideWinInfoBranch", &dummy);
     curtree->SetBranchAddress("PulseSlideWinInfoBranch.fTstart_raw", inevent.tstart);
+    curtree->SetBranchAddress("PulseSlideWinInfoBranch.fPMTNum", inevent.pmt);
   }
 
   const uint64_t localentry = current_event - offset;
 
   tbranch->GetEntry(localentry);
+  pbranch->GetEntry(localentry);
 }
 
 /** Make inevent the eventn'th event in the chain. */
