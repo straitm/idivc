@@ -1,8 +1,8 @@
-struct otc_input_event {
+struct idivc_input_event {
   double tstart[520];
 };
 
-struct otc_output_event {
+struct idivc_output_event {
   float timeid;
   float timeiv;
   float firstidpmt;

@@ -13,8 +13,6 @@ all: idivc
 
 idivc_obj = idivc_main.o idivc_root.o
 
-other_obj = ${DOGS_PATH}/DCDisplay/ZOE/z{geo,cont}.o
-
 idivc: $(idivc_obj) 
 	@echo Linking idivc
 	@$(CXX) $(LINKFLAGS) $(LIB) -o idivc $(idivc_obj) $(other_obj)

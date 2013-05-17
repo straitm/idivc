@@ -24,7 +24,6 @@ namespace {
 
   vector<TTree *> hitchain;
   vector<uint64_t> hitchain_entries;
-  bool inputismc = false;
 
   // Needed for writing the output file
   TFile * outfile;
@@ -92,11 +91,11 @@ static uint64_t root_init_input(const char * const * const filenames,
   for(int i = 0; i < nfiles; i++){
     const char * const fname = filenames[i];
     if(strlen(fname) < 9){
-      fprintf(stderr, "%s doesn't have the form *muon*.root\n", fname);
+      fprintf(stderr, "%s doesn't have the form *base*.root\n", fname);
       _exit(1);
     }
-    if(!strstr(fname, "muon")){
-      fprintf(stderr, "File name %s does not contain \"muon\"\n", fname);
+    if(!strstr(fname, "base")){
+      fprintf(stderr, "File name %s does not contain \"base\"\n", fname);
       _exit(1);
     }
     if(strstr(fname, ".root") != fname + strlen(fname) - 5){
