@@ -57,8 +57,8 @@ static void get_hits(const uint64_t current_event)
     curtree->SetMakeClass(1);
     tbranch   = curtree->GetBranch("PulseSlideWinInfoBranch.fTstart_raw");
     int dummy;
-    curtree->SetBranchAddress("OVHitInfoBranch", &dummy);
-    curtree->SetBranchAddress("OVHitInfoBranch.fTstart_raw", inevent.tstart);
+    curtree->SetBranchAddress("PulseSlideWinInfoBranch", &dummy);
+    curtree->SetBranchAddress("PulseSlideWinInfoBranch.fTstart_raw", inevent.tstart);
   }
 
   const uint64_t localentry = current_event - offset;
@@ -86,7 +86,7 @@ static uint64_t root_init_input(const char * const * const filenames,
 {
   TChain mctestchain("PulseSlideWinInfoTree");
 
-  uint64_t totentries_hit = 0, totentries_reco = 0;
+  uint64_t totentries_hit = 0;
 
   for(int i = 0; i < nfiles; i++){
     const char * const fname = filenames[i];
@@ -120,12 +120,6 @@ static uint64_t root_init_input(const char * const * const filenames,
     totentries_hit += temp->GetEntries();
 
     printf("Loaded %s\n", fname);
-  }
-
-  if(totentries_hit != totentries_reco){
-    fprintf(stderr, "ERROR: hit tree has %ld entries, but reco tree has %ld\n",
-            totentries_hit, totentries_reco);
-    exit(1);
   }
 
   return totentries_hit;
