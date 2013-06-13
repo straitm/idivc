@@ -21,7 +21,10 @@ static void printhelp()
   printf(
   "IDIVC: The Inner Detector Inner Veto Event Time Corrector\n"
   "\n"
-  "Basic syntax: idivc -o [output file] [one or more base.root files]\n"
+  "Basic syntax:\n"
+  "idivc -o [output file] -t [timing file] [one or more base.root files]\n"
+  "\n"
+  "-o and -t are mandatory\n"
   "\n"
   "-c: Overwrite existing output file\n"
   "-n [number] Process at most this many events\n"
@@ -74,7 +77,7 @@ static int handle_cmdline(int argc, char ** argv, bool & clobber,
   }  
 
   if(!timingfile){
-    fprintf(stderr, "You must give an timing file name with -o\n");
+    fprintf(stderr, "You must give an timing file name with -t\n");
     printhelp();
     exit(1);
   }
