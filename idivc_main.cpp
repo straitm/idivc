@@ -24,7 +24,9 @@ static void printhelp()
   "Basic syntax:\n"
   "idivc -o [output file] -t [timing file] [one or more base.root files]\n"
   "\n"
-  "-o and -t are mandatory\n"
+  "-o and -t are mandatory.\n"
+  "For Monte Carlo, you may give \"MC\" for the timing file, in which\n"
+  "case, no file is read and all zeros are used for the time constants.\n"
   "\n"
   "-c: Overwrite existing output file\n"
   "-n [number] Process at most this many events\n"
@@ -77,7 +79,7 @@ static int handle_cmdline(int argc, char ** argv, bool & clobber,
   }  
 
   if(!timingfile){
-    fprintf(stderr, "You must give an timing file name with -t\n");
+    fprintf(stderr, "You must give an timing file or \"MC\" with -t\n");
     printhelp();
     exit(1);
   }
@@ -166,6 +168,11 @@ static void doit_loop(const unsigned int nevent,
 
 static double * getfidoconsts(const char * const timingfilename)
 {
+  double * const consts = (double*)malloc(NPMT*sizeof(double));
+  memset(consts, 0, NPMT*sizeof(double));
+
+  if(!strcmp(timingfilename, "MC")) return consts;
+
   TFile * hey = new TFile(timingfilename, "read");
 
   if(!hey || hey->IsZombie()){
@@ -181,9 +188,6 @@ static double * getfidoconsts(const char * const timingfilename)
     exit(1);
   }
 
-  double * const consts = (double*)malloc(NPMT*sizeof(double));
-  memset(consts, 0, NPMT*sizeof(double));
-  
   for(int i = 0; i < calgraph->GetN(); i++){
     double pmt, time;
     calgraph->GetPoint(i, pmt, time);
