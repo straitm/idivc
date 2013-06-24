@@ -1,6 +1,6 @@
 /**
   \author Matthew Strait
-  \brief Handles most ROOT interaction for ROVER.
+  \brief Handles ROOT I/O.
 */
 
 using namespace std;
